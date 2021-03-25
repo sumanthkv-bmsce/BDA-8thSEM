@@ -1,0 +1,211 @@
+Connected to Test Cluster at 127.0.0.1:9042.
+[cqlsh 5.0.1 | Cassandra 4.0 | CQL spec 3.4.5 | Native protocol v4]
+Use HELP for help.
+cqlsh> CREATE KEYSPACE Students WITH REPLICATION = {'class':'SimpleStrategy','replication_factor':1};
+cqlsh> DESCRIBE KEYSPACES;
+
+students  system_auth         system_schema  system_views
+system    system_distributed  system_traces  system_virtual_schema
+
+cqlsh> SELECT * FROM system_schema.keyspaces;
+
+ keyspace_name      | durable_writes | replication
+--------------------+----------------+-------------------------------------------------------------------------------------
+        system_auth |           True | {'class': 'org.apache.cassandra.locator.SimpleStrategy', 'replication_factor': '1'}
+      system_schema |           True |                             {'class': 'org.apache.cassandra.locator.LocalStrategy'}
+ system_distributed |           True | {'class': 'org.apache.cassandra.locator.SimpleStrategy', 'replication_factor': '3'}
+             system |           True |                             {'class': 'org.apache.cassandra.locator.LocalStrategy'}
+      system_traces |           True | {'class': 'org.apache.cassandra.locator.SimpleStrategy', 'replication_factor': '2'}
+           students |           True | {'class': 'org.apache.cassandra.locator.SimpleStrategy', 'replication_factor': '1'}
+
+(6 rows)
+cqlsh> USE Students;
+cqlsh:students> CREATE TABLE Students_Info (Roll_No int PRIMARY KEY, StudName text, DateOfJoining timestamp, last_exam_Percent double);
+cqlsh:students> DESCRIBE TABLES;
+
+students_info
+
+cqlsh:students> DESCRIBE TABLE Students_Info;
+
+CREATE TABLE students.students_info (
+    roll_no int PRIMARY KEY,
+    dateofjoining timestamp,
+    last_exam_percent double,
+    studname text
+) WITH additional_write_policy = '99p'
+    AND bloom_filter_fp_chance = 0.01
+    AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}
+    AND cdc = false
+    AND comment = ''
+    AND compaction = {'class': 'org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy', 'max_threshold': '32', 'min_threshold': '4'}
+    AND compression = {'chunk_length_in_kb': '16', 'class': 'org.apache.cassandra.io.compress.LZ4Compressor'}
+    AND crc_check_chance = 1.0
+    AND default_time_to_live = 0
+    AND extensions = {}
+    AND gc_grace_seconds = 864000
+    AND max_index_interval = 2048
+    AND memtable_flush_period_in_ms = 0
+    AND min_index_interval = 128
+    AND read_repair = 'BLOCKING'
+    AND speculative_retry = '99p';
+cqlsh:students> BEGIN BATCH
+            ... INSERT INTO Students_Info(Roll_No, StudName, DateOfJoining, last_exam_Percent) VALUES (1,'Asha','2012-03-12',79.9)
+            ... APPLY BATCH
+            ... ;
+cqlsh:students> INSERT INTO Students_Info(Roll_No, StudName, DateOfJoining, last_exam_Percent) VALUES (2,'Krian','2012-0
+3-12',89.9)
+            ... ;
+cqlsh:students> INSERT INTO Students_Info(Roll_No, StudName, DateOfJoining, last_exam_Percent) VALUES (3,'Tarun','2012-0
+3-12',78.9);
+cqlsh:students> INSERT INTO Students_Info(Roll_No, StudName, DateOfJoining, last_exam_Percent) VALUES (4,'Samarth','2012
+-03-12',90.9);
+cqlsh:students> INSERT INTO Students_Info(Roll_No, StudName, DateOfJoining, last_exam_Percent) VALUES (5,'Smitha','2012-
+03-12',67.9);
+cqlsh:students> INSERT INTO Students_Info(Roll_No, StudName, DateOfJoining, last_exam_Percent) VALUES (6,'Rohan','2012-0
+3-12',56.9);
+cqlsh:students> SELECT * FROM Student_Info;
+InvalidRequest: Error from server: code=2200 [Invalid query] message="table student_info does not exist"
+cqlsh:students> SELECT * FROM Students_Info;
+
+ roll_no | dateofjoining                   | last_exam_percent | studname
+---------+---------------------------------+-------------------+----------
+       5 | 2012-03-11 18:30:00.000000+0000 |              67.9 |   Smitha
+       1 | 2012-03-11 18:30:00.000000+0000 |              79.9 |     Asha
+       2 | 2012-03-11 18:30:00.000000+0000 |              89.9 |    Krian
+       4 | 2012-03-11 18:30:00.000000+0000 |              90.9 |  Samarth
+       6 | 2012-03-11 18:30:00.000000+0000 |              56.9 |    Rohan
+       3 | 2012-03-11 18:30:00.000000+0000 |              78.9 |    Tarun
+
+(6 rows)
+cqlsh:students> SELECT * FROM Students_Info WHERE Roll_No IN (1,2,3);
+
+ roll_no | dateofjoining                   | last_exam_percent | studname
+---------+---------------------------------+-------------------+----------
+       1 | 2012-03-11 18:30:00.000000+0000 |              79.9 |     Asha
+       2 | 2012-03-11 18:30:00.000000+0000 |              89.9 |    Krian
+       3 | 2012-03-11 18:30:00.000000+0000 |              78.9 |    Tarun
+
+(3 rows)
+cqlsh:students> SELECT * FROM Students_Info WHERE studname='Asha';
+InvalidRequest: Error from server: code=2200 [Invalid query] message="Cannot execute this query as it might involve data filtering and thus may have unpredictable performance. If you want to execute this query despite the performance unpredictability, use ALLOW FILTERING"
+
+cqlsh:students> CREATE INDEX ON Students_Info(StudName);
+cqlsh:students> SELECT * FROM Students_Info WHERE Studname='Asha';
+
+ roll_no | dateofjoining                   | last_exam_percent | studname
+---------+---------------------------------+-------------------+----------
+       1 | 2012-03-11 18:30:00.000000+0000 |              79.9 |     Asha
+
+(1 rows)
+cqlsh:students> select Roll_No, StudName from students_info LIMIT 2;
+
+ roll_no | studname
+---------+----------
+       5 |   Smitha
+       1 |     Asha
+
+(2 rows)
+cqlsh:students> select Roll_No as "USN" from Students_Info;
+
+ USN
+-----
+   5
+   1
+   2
+   4
+   6
+   3
+
+(6 rows)
+cqlsh:students> UPDATE students_info SET studname='David Sheen' WHERE Roll_No=2;
+cqlsh:students> UPDATE students_info SET Roll_No=7 WHERE Roll_No=3;
+InvalidRequest: Error from server: code=2200 [Invalid query] message="PRIMARY KEY part roll_no found in SET part"
+cqlsh:students> DELETE last_exam_percent FROM students_info where roll_no=2;
+cqlsh:students> select * from students_info;
+
+ roll_no | dateofjoining                   | last_exam_percent | studname
+---------+---------------------------------+-------------------+-------------
+       5 | 2012-03-11 18:30:00.000000+0000 |              67.9 |      Smitha
+       1 | 2012-03-11 18:30:00.000000+0000 |              79.9 |        Asha
+       2 | 2012-03-11 18:30:00.000000+0000 |              null | David Sheen
+       4 | 2012-03-11 18:30:00.000000+0000 |              90.9 |     Samarth
+       6 | 2012-03-11 18:30:00.000000+0000 |              56.9 |       Rohan
+       3 | 2012-03-11 18:30:00.000000+0000 |              78.9 |       Tarun
+
+(6 rows)
+cqlsh:students> delete from students_info where roll_no=2;
+cqlsh:students> select * from students_info;
+
+ roll_no | dateofjoining                   | last_exam_percent | studname
+---------+---------------------------------+-------------------+----------
+       5 | 2012-03-11 18:30:00.000000+0000 |              67.9 |   Smitha
+       1 | 2012-03-11 18:30:00.000000+0000 |              79.9 |     Asha
+       4 | 2012-03-11 18:30:00.000000+0000 |              90.9 |  Samarth
+       6 | 2012-03-11 18:30:00.000000+0000 |              56.9 |    Rohan
+       3 | 2012-03-11 18:30:00.000000+0000 |              78.9 |    Tarun
+
+(5 rows)
+cqlsh:students> alter table students_info add hobbies set<text>;
+cqlsh:students> alter table students_info add language list<text>;
+cqlsh:students> update students_info set hobbies=hobbies+{'Chess,Table Tennis'} where RollNo=1;
+InvalidRequest: Error from server: code=2200 [Invalid query] message="Undefined column name rollno in table students.students_info"
+cqlsh:students> update students_info set hobbies=hobbies+{'Chess,Table Tennis'} where Roll_No=1;
+cqlsh:students> update students_info set language=language+['Hindi,English'] where Roll_No=1;
+cqlsh:students> select * from students_info;
+
+ roll_no | dateofjoining                   | hobbies                | language          | last_exam_percent | studname
+---------+---------------------------------+------------------------+-------------------+-------------------+----------
+       5 | 2012-03-11 18:30:00.000000+0000 |                   null |              null |              67.9 |   Smitha
+       1 | 2012-03-11 18:30:00.000000+0000 | {'Chess,Table Tennis'} | ['Hindi,English'] |              79.9 |     Asha
+       4 | 2012-03-11 18:30:00.000000+0000 |                   null |              null |              90.9 |  Samarth
+       6 | 2012-03-11 18:30:00.000000+0000 |                   null |              null |              56.9 |    Rohan
+       3 | 2012-03-11 18:30:00.000000+0000 |                   null |              null |              78.9 |    Tarun
+
+(5 rows)
+cqlsh:students> alter table students_info add cval counter;
+cqlsh:students> update students_info set cval=cval+1 where Roll_No>2;
+InvalidRequest: Error from server: code=2200 [Invalid query] message="Only EQ and IN relation are supported on the partition key (unless you use the token() function) for UPDATE statements"
+cqlsh:students> update students_info set cval=cval+1 where Roll_No=4;
+cqlsh:students> select * from students_info;
+
+ roll_no | cval | dateofjoining                   | hobbies                | language          | last_exam_percent | studname
+---------+------+---------------------------------+------------------------+-------------------+-------------------+----------
+       5 | null | 2012-03-11 18:30:00.000000+0000 |                   null |              null |              67.9 |   Smitha
+       1 | null | 2012-03-11 18:30:00.000000+0000 | {'Chess,Table Tennis'} | ['Hindi,English'] |              79.9 |     Asha
+       4 |    1 | 2012-03-11 18:30:00.000000+0000 |                   null |              null |              90.9 |  Samarth
+       6 | null | 2012-03-11 18:30:00.000000+0000 |                   null |              null |              56.9 |    Rohan
+       3 | null | 2012-03-11 18:30:00.000000+0000 |                   null |              null |              78.9 |    Tarun
+
+(5 rows)
+cqlsh:students> INSERT INTO Students_Info(Roll_No, StudName, DateOfJoining, last_exam_Percent) VALUES (8,'Rola','2012-03-12',56.9) USING TTL 30;
+cqlsh:students> SELECT TTL(last_exam_percent) from students_info where roll_no=1;
+
+ ttl(last_exam_percent)
+------------------------
+                   null
+
+(1 rows)
+
+cqlsh:students> COPY Students_Info(Roll_No, StudName, DateOfJoining, last_exam_Percent) to 'week1.csv';
+Using 7 child processes
+
+Starting copy of students.students_info with columns [roll_no, studname, dateofjoining, last_exam_percent].
+cqlshlib.copyutil.ExportProcess.write_rows_to_csv(): writing row
+cqlshlib.copyutil.ExportProcess.write_rows_to_csv(): writing row/s
+cqlshlib.copyutil.ExportProcess.write_rows_to_csv(): writing row
+cqlshlib.copyutil.ExportProcess.write_rows_to_csv(): writing row
+cqlshlib.copyutil.ExportProcess.write_rows_to_csv(): writing row
+Processed: 5 rows; Rate:      24 rows/s; Avg. rate:      11 rows/s
+5 rows exported to 1 files in 0.502 seconds.
+cqlsh:students> COPY Students_Info(Roll_No, StudName, DateOfJoining, last_exam_Percent) to STDOUT;
+cqlshlib.copyutil.ExportProcess.write_rows_to_csv(): writing row
+cqlshlib.copyutil.ExportProcess.write_rows_to_csv(): writing row
+cqlshlib.copyutil.ExportProcess.write_rows_to_csv(): writing row
+3,Tarun,2012-03-11 18:30:00.000+0000,78.9
+1,Asha,2012-03-11 18:30:00.000+0000,79.9
+4,Samarth,2012-03-11 18:30:00.000+0000,90.9
+cqlshlib.copyutil.ExportProcess.write_rows_to_csv(): writing row
+6,Rohan,2012-03-11 18:30:00.000+0000,56.9
+cqlshlib.copyutil.ExportProcess.write_rows_to_csv(): writing row
+5,Smitha,2012-03-11 18:30:00.000+0000,67.9
+cqlsh:students>
