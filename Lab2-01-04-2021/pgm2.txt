@@ -1,0 +1,248 @@
+cqlsh> CREATE KEYSPACE Library WITH REPLICATION = {'class':'SimpleStrategy','replication_factor':1};
+cqlsh> DESCRIBE KEYSPACES;
+cqlsh> USE Library;
+cqlsh:library> CREATE TABLE library_book(counter_value counter, book_name varchar, stud_name varchar,book_id int,stud_id int,date_of_issue timestamp,PRIMARY KEY(stud_id,book_name,stud_name,book_id,date_of_issue));
+cqlsh:library> update library_book set counter_value = counter_value + 1 where book_name='BDA' and stud_name='Sumanth k V' and book_id = 101 and stud_id = 112 and date_of_issue='2021-01-01';
+cqlsh:library> update library_book set counter_value = counter_value + 1 where book_name='AI' and stud_name='Smitha' and book_id = 104 and stud_id = 111 and date_of_issue='2021-01-04';
+cqlsh:library> update library_book set counter_value = counter_value + 1 where book_name='ML' and stud_name='Asha' and book_id = 103 and stud_id = 110 and date_of_issue='2021-01-03';
+cqlsh:library> update library_book set counter_value = counter_value + 1 where book_name='CN' and stud_name='Kiran' and book_id = 102 and stud_id = 113 and date_of_issue='2021-01-02';
+cqlsh:library> select * from library_book;
+
+ stud_id | book_name | stud_name   | book_id | date_of_issue                   | counter_value
+---------+-----------+-------------+---------+---------------------------------+---------------
+     110 |        ML |        Asha |     103 | 2021-01-02 18:30:00.000000+0000 |             1
+     111 |        AI |      Smitha |     104 | 2021-01-03 18:30:00.000000+0000 |             1
+     113 |        CN |       Kiran |     102 | 2021-01-01 18:30:00.000000+0000 |             1
+     112 |       BDA | Sumanth k V |     101 | 2020-12-31 18:30:00.000000+0000 |             1
+
+(4 rows)
+cqlsh:library> update library_book set counter_value = counter_value + 1 where book_name='BDA' and stud_name='Sumanth k V' and book_id = 101 and stud_id = 112 and date_of_issue='2021-01-01';
+cqlsh:library> select * from library_book;
+
+ stud_id | book_name | stud_name   | book_id | date_of_issue                   | counter_value
+---------+-----------+-------------+---------+---------------------------------+---------------
+     110 |        ML |        Asha |     103 | 2021-01-02 18:30:00.000000+0000 |             1
+     111 |        AI |      Smitha |     104 | 2021-01-03 18:30:00.000000+0000 |             1
+     113 |        CN |       Kiran |     102 | 2021-01-01 18:30:00.000000+0000 |             1
+     112 |       BDA | Sumanth k V |     101 | 2020-12-31 18:30:00.000000+0000 |             2
+
+(4 rows)
+cqlsh:library> select * from library_book where book_name='BDA' and stud_name='Sumanth k V' and book_id = 101 and stud_id = 112 and date_of_issue='2021-01-01';
+
+ stud_id | book_name | stud_name   | book_id | date_of_issue                   | counter_value
+---------+-----------+-------------+---------+---------------------------------+---------------
+     112 |       BDA | Sumanth k V |     101 | 2020-12-31 18:30:00.000000+0000 |             2
+
+(1 rows)
+cqlsh:library> copy library_book(stud_id,book_name,stud_name,book_id,date_of_issue) to 'C:\Users\suman\Downloads\cassandra.csv';
+Using 11 child processes
+
+Starting copy of library.library_book with columns [stud_id, book_name, stud_name, book_id, date_of_issue].
+Processed: 4 rows; Rate:       4 rows/s; Avg. rate:       3 rows/s
+4 rows exported to 1 files in 1.395 seconds.
+cqlsh:library> create table col_fam(identifier int,username text,first_name text,last_name text, PRIMARY KEY(identifier,username,first_name,last_name));
+cqlsh:library> COPY col_fam(username,identifier,first_name,last_name) from 'C:\Users\suman\Downloads\Book.csv';
+Using 11 child processes
+
+Starting copy of library.col_fam with columns [username, identifier, first_name, last_name].
+Failed to import 1 rows: ParseError - Failed to parse identifier : invalid literal for int() with base 10: 'identifier',  given up without retries
+Failed to process 1 rows; failed rows written to import_library_col_fam.err
+PProcess ImportProcess-142:
+rocess ImportProcess-145:
+TPraceback (most recent call last):
+TProcess ImportProcess-144:
+ T File "C:\Python27\lib\multiprocessing\process.py", line 232, in _bootstrap
+rocess ImportProcess-143:
+PPraceback (most recent call last):
+raceback (most recent call last):
+Trocess ImportProcess-147:
+rocess ImportProcess-146:
+  raceback (most recent call last):
+T raceback (most recent call last):
+P File "C:\Python27\lib\multiprocessing\process.py", line 232, in _bootstrap
+ File "C:\Python27\lib\multiprocessing\process.py", line 232, in _bootstrap
+     self.run()
+P rocess ImportProcess-149:
+ File "C:\Python27\lib\multiprocessing\process.py", line 232, in _bootstrap
+  P   self.run()
+ File "C:\Python27\lib\multiprocessing\process.py", line 232, in _bootstrap
+   self.run()
+ rocess ImportProcess-148:
+PT   self.run()
+Process ImportProcess-152:
+T    File "C:\Program Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2330, in run
+Trocess ImportProcess-150:
+raceback (most recent call last):
+ rocess ImportProcess-151:
+ File "C:\Program Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2330, in run
+T File "C:\Program Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2330, in run
+   self.run()
+  raceback (most recent call last):
+T T File "C:\Python27\lib\multiprocessing\process.py", line 232, in _bootstrap
+raceback (most recent call last):
+    File "C:\Program Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2330, in run
+   self.close()
+   File "C:\Python27\lib\multiprocessing\process.py", line 232, in _bootstrap
+raceback (most recent call last):
+ File "C:\Program Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2330, in run
+    self.run()
+   self.close()
+ raceback (most recent call last):
+ raceback (most recent call last):
+ File "C:\Program Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2334, in close
+  File "C:\Python27\lib\multiprocessing\process.py", line 232, in _bootstrap
+   self.run()
+   self.close()
+     self.close()
+   self.close()
+     File "C:\Python27\lib\multiprocessing\process.py", line 232, in _bootstrap
+  File "C:\Program Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2330, in run
+ File "C:\Program Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2330, in run
+ File "C:\Program Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2334, in close
+   File "C:\Python27\lib\multiprocessing\process.py", line 232, in _bootstrap
+  File "C:\Python27\lib\multiprocessing\process.py", line 232, in _bootstrap
+   self._session.cluster.shutdown()
+      File "C:\Program Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2334, in close
+   self._session.cluster.shutdown()
+ File "C:\Program Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2334, in close
+      self._session.cluster.shutdown()
+   self.run()
+   self.close()
+   self.close()
+    self.run()
+     self._session.cluster.shutdown()
+ File "C:\Program Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2334, in close
+ File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 1259, in shutdown
+      File "C:\Program Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2334, in close
+   self.run()
+    File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 1259, in shutdown
+ File "C:\Program Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2330, in run
+ File "C:\Program Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2334, in close
+   self.run()
+  File "C:\Program Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2330, in run
+ File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 1259, in shutdown
+   File "C:\Program Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2330, in run
+   self._session.cluster.shutdown()
+      self.close()
+    self._session.cluster.shutdown()
+   self.control_connection.shutdown()
+   self.close()
+      self._session.cluster.shutdown()
+   self.close()
+   File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 1259, in shutdown
+      self.control_connection.shutdown()
+   self.control_connection.shutdown()
+ File "C:\Program Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2330, in run
+ File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 1259, in shutdown
+  File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 1259, in shutdown
+   self.control_connection.shutdown()
+   File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 2850, in shutdown
+        self.control_connection.shutdown()
+ File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 1259, in shutdown
+ File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 2850, in shutdown
+   self.control_connection.shutdown()
+ File "C:\Program Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2334, in close
+  File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 2850, in shutdown
+ File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 2850, in shutdown
+ File "C:\Program Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2334, in close
+ File "C:\Program Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2334, in close
+   self.close()
+    File "C:\Program Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2334, in close
+   self._connection.close()
+      File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 2850, in shutdown
+  File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 2850, in shutdown
+   self._connection.close()
+     self._connection.close()
+   self._connection.close()
+   self.control_connection.shutdown()
+   self._session.cluster.shutdown()
+   self._session.cluster.shutdown()
+       self._session.cluster.shutdown()
+ File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 373, in close
+     File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 1259, in shutdown
+    self._session.cluster.shutdown()
+  File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 1259, in shutdown
+  File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 373, in close
+    self.control_connection.shutdown()
+ File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 1259, in shutdown
+   self._connection.close()
+    self._connection.close()
+ File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 373, in close
+ File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 373, in close
+ File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 2850, in shutdown
+      self._connection.close()
+ File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 1259, in shutdown
+    self.control_connection.shutdown()
+      AsyncoreConnection.create_timer(0, partial(asyncore.dispatcher.close, self))
+     AsyncoreConnection.create_timer(0, partial(asyncore.dispatcher.close, self))
+    AsyncoreConnection.create_timer(0, partial(asyncore.dispatcher.close, self))
+  File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 2850, in shutdown
+   self.control_connection.shutdown()
+   AsyncoreConnection.create_timer(0, partial(asyncore.dispatcher.close, self))
+  File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 2850, in shutdown
+  File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 373, in close
+ File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 373, in close
+   File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 335, in create_timer
+    File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 335, in create_timer
+    self.control_connection.shutdown()
+   File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 373, in close
+   AsyncoreConnection.create_timer(0, partial(asyncore.dispatcher.close, self))
+ File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 335, in create_timer
+     cls._loop.add_timer(timer)
+ A    AsyncoreConnection.create_timer(0, partial(asyncore.dispatcher.close, self))
+   self._connection.close()
+   File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 335, in create_timer
+    self._connection.close()
+   cls._loop.add_timer(timer)
+   cls._loop.add_timer(timer)
+ttributeError: 'NoneType' object has no attribute 'add_timer'
+ File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 2850, in shutdown
+  File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 2850, in shutdown
+ File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 373, in close
+ File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 335, in create_timer
+    AsyncoreConnection.create_timer(0, partial(asyncore.dispatcher.close, self))
+ AAttributeError: 'NoneType' object has no attribute 'add_timer'
+ File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 335, in create_timer
+     cls._loop.add_timer(timer)
+   File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 373, in close
+ttributeError: 'NoneType' object has no attribute 'add_timer'
+     self._connection.close()
+   cls._loop.add_timer(timer)
+A   AsyncoreConnection.create_timer(0, partial(asyncore.dispatcher.close, self))
+ File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 335, in create_timer
+  File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 335, in create_timer
+   cls._loop.add_timer(timer)
+ AttributeError: 'NoneType' object has no attribute 'add_timer'
+     cls._loop.add_timer(timer)
+ A   cls._loop.add_timer(timer)
+ File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 373, in close
+   self._connection.close()
+   AsyncoreConnection.create_timer(0, partial(asyncore.dispatcher.close, self))
+AttributeError: 'NoneType' object has no attribute 'add_timer'
+ttributeError: 'NoneType' object has no attribute 'add_timer'
+A  ttributeError: 'NoneType' object has no attribute 'add_timer'
+ ttributeError: 'NoneType' object has no attribute 'add_timer'
+ File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 373, in close
+ File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 335, in create_timer
+   AsyncoreConnection.create_timer(0, partial(asyncore.dispatcher.close, self))
+     AsyncoreConnection.create_timer(0, partial(asyncore.dispatcher.close, self))
+     cls._loop.add_timer(timer)
+ File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 335, in create_timer
+A File "C:\Program Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 335, in create_timer
+  ttributeError: 'NoneType' object has no attribute 'add_timer'
+   cls._loop.add_timer(timer)
+   cls._loop.add_timer(timer)
+AAttributeError: 'NoneType' object has no attribute 'add_timer'
+ttributeError: 'NoneType' object has no attribute 'add_timer'
+Processed: 5 rows; Rate:       2 rows/s; Avg. rate:       3 rows/s
+4 rows imported from 1 files in 1.580 seconds (0 skipped).
+cqlsh:library> select * from col_fam;
+
+ identifier | username   | first_name | last_name
+------------+------------+------------+-----------
+        104 |   SmithaKH |     Smitha |        KH
+        102 |    kiranDV |      kiran |        DV
+        101 |  sumanthkv |    sumanth |        kv
+        103 | AshaBhosle |       Asha |    Bhosle
+
+(4 rows)

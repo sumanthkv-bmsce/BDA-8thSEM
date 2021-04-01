@@ -1,0 +1,104 @@
+cqlsh> CREATE KEYSPACE Employee WITH REPLICATION = {'class':'SimpleStrategy','replication_factor':1};
+cqlsh> DESCRIBE KEYSPACES;
+cqlsh> USE Employee;
+cqlsh:employee> CREATE TABLE employee_info (
+            ...     emp_id int,
+            ...     date_of_joining timestamp,
+            ...     designation text,
+            ...     emp_name text,
+            ...     salary int,
+            ...     PRIMARY KEY(emp_id,salary)
+            ... );
+cqlsh:employee>
+cqlsh:employee>  begin batch
+            ... INSERT INTO Employee_info (emp_id,date_of_joining,designation,emp_name,salary) VALUES(1,'2021-01-01','Software engineer','Sumanth K V',15000)
+            ... INSERT INTO Employee_info (emp_id,date_of_joining,designation,emp_name,salary) VALUES(2,'2021-01-02','Software engineer - 2','Asha',10000)
+            ... INSERT INTO Employee_info (emp_id,date_of_joining,designation,emp_name,salary) VALUES(3,'2021-01-03','Technical staff','Samrath',20000)
+            ... INSERT INTO Employee_info (emp_id,date_of_joining,designation,emp_name,salary) VALUES(4,'2021-01-05','Assistant','Asha',7000)
+            ... INSERT INTO Employee_info (emp_id,date_of_joining,designation,emp_name,salary) VALUES(121,'2021-01-06','Helper','Kiran',8000)
+            ... INSERT INTO Employee_info (emp_id,date_of_joining,designation,emp_name,salary) VALUES(124,'2021-01-07','Engineer','Rohan',9000)
+            ... apply batch;
+cqlsh:employee> select * from employee_info;
+emp_id | salary | date_of_joining                 | designation           | emp_name
+--------+--------+---------------------------------+-----------------------+-------------
+      1 |  15000 | 2020-12-31 18:30:00.000000+0000 |     Software engineer | Sumanth K V
+      2 |  10000 | 2021-01-01 18:30:00.000000+0000 | Software engineer - 2 |        Asha
+      4 |   7000 | 2021-01-04 18:30:00.000000+0000 |             Assistant |        Asha
+    121 |   8000 | 2021-01-05 18:30:00.000000+0000 |                Helper |       Kiran
+    124 |   9000 | 2021-01-06 18:30:00.000000+0000 |              Engineer |       Rohan
+      3 |  20000 | 2021-01-02 18:30:00.000000+0000 |       Technical staff |     Samrath
+
+cqlsh:employee> update employee_info set emp_name='UpdatedHelper',designation='UpdatedHelper' where emp_id=121 and salary=8000;
+cqlsh:employee> select * from employee_info;
+
+ emp_id | salary | date_of_joining                 | designation           | emp_name
+--------+--------+---------------------------------+-----------------------+---------------
+      1 |  15000 | 2020-12-31 18:30:00.000000+0000 |     Software engineer |   Sumanth K V
+      2 |  10000 | 2021-01-01 18:30:00.000000+0000 | Software engineer - 2 |          Asha
+      4 |   7000 | 2021-01-04 18:30:00.000000+0000 |             Assistant |          Asha
+    121 |   8000 | 2021-01-05 18:30:00.000000+0000 |         UpdatedHelper | UpdatedHelper
+    124 |   9000 | 2021-01-06 18:30:00.000000+0000 |              Engineer |         Rohan
+      3 |  20000 | 2021-01-02 18:30:00.000000+0000 |       Technical staff |       Samrath
+
+cqlsh:employee> create index on employee_info(salary);
+cqlsh:employee> select * from employee_info where salary=15000;
+
+ emp_id | salary | date_of_joining                 | designation       | emp_name
+--------+--------+---------------------------------+-------------------+-------------
+      1 |  15000 | 2020-12-31 18:30:00.000000+0000 | Software engineer | Sumanth K V
+
+cqlsh:employee> alter table employee_info add projects set<text>;
+cqlsh:employee> update employee_info set projects = projects + {'cloud','ml'} where emp_id=1 and salary=15000;
+cqlsh:employee> select * from employee_info;
+
+ emp_id | salary | date_of_joining                 | designation           | emp_name      | projects
+--------+--------+---------------------------------+-----------------------+---------------+-----------------
+      1 |  15000 | 2020-12-31 18:30:00.000000+0000 |     Software engineer |   Sumanth K V | {'cloud', 'ml'}
+      2 |  10000 | 2021-01-01 18:30:00.000000+0000 | Software engineer - 2 |          Asha |            null
+      4 |   7000 | 2021-01-04 18:30:00.000000+0000 |             Assistant |          Asha |            null
+    121 |   8000 | 2021-01-05 18:30:00.000000+0000 |         UpdatedHelper | UpdatedHelper |            null
+    124 |   9000 | 2021-01-06 18:30:00.000000+0000 |              Engineer |         Rohan |            null
+      3 |  20000 | 2021-01-02 18:30:00.000000+0000 |       Technical staff |       Samrath |            null
+
+(6 rows)
+
+cqlsh:employee> update employee_info set projects = projects + {'AI','devops'} where emp_id=2 and salary=10000;
+cqlsh:employee> select * from employee_info;
+
+ emp_id | salary | date_of_joining                 | designation           | emp_name      | projects
+--------+--------+---------------------------------+-----------------------+---------------+------------------
+      1 |  15000 | 2020-12-31 18:30:00.000000+0000 |     Software engineer |   Sumanth K V |  {'cloud', 'ml'}
+      2 |  10000 | 2021-01-01 18:30:00.000000+0000 | Software engineer - 2 |          Asha | {'AI', 'devops'}
+      4 |   7000 | 2021-01-04 18:30:00.000000+0000 |             Assistant |          Asha |             null
+    121 |   8000 | 2021-01-05 18:30:00.000000+0000 |         UpdatedHelper | UpdatedHelper |             null
+    124 |   9000 | 2021-01-06 18:30:00.000000+0000 |              Engineer |         Rohan |             null
+      3 |  20000 | 2021-01-02 18:30:00.000000+0000 |       Technical staff |       Samrath |             null
+
+(6 rows)
+
+cqlsh:employee> INSERT INTO Employee_info (emp_id,date_of_joining,designation,emp_name,salary) VALUES(125,'2021-01-08','Marketing','Smitha',19000) using TTL 15;
+cqlsh:employee> select * from employee_info;
+
+ emp_id | salary | date_of_joining                 | designation           | emp_name      | projects
+--------+--------+---------------------------------+-----------------------+---------------+------------------
+    125 |  19000 | 2021-01-07 18:30:00.000000+0000 |             Marketing |        Smitha |             null
+      1 |  15000 | 2020-12-31 18:30:00.000000+0000 |     Software engineer |   Sumanth K V |  {'cloud', 'ml'}
+      2 |  10000 | 2021-01-01 18:30:00.000000+0000 | Software engineer - 2 |          Asha | {'AI', 'devops'}
+      4 |   7000 | 2021-01-04 18:30:00.000000+0000 |             Assistant |          Asha |             null
+    121 |   8000 | 2021-01-05 18:30:00.000000+0000 |         UpdatedHelper | UpdatedHelper |             null
+    124 |   9000 | 2021-01-06 18:30:00.000000+0000 |              Engineer |         Rohan |             null
+      3 |  20000 | 2021-01-02 18:30:00.000000+0000 |       Technical staff |       Samrath |             null
+
+(7 rows)
+cqlsh:employee> select * from employee_info;
+
+ emp_id | salary | date_of_joining                 | designation           | emp_name      | projects
+--------+--------+---------------------------------+-----------------------+---------------+------------------
+      1 |  15000 | 2020-12-31 18:30:00.000000+0000 |     Software engineer |   Sumanth K V |  {'cloud', 'ml'}
+      2 |  10000 | 2021-01-01 18:30:00.000000+0000 | Software engineer - 2 |          Asha | {'AI', 'devops'}
+      4 |   7000 | 2021-01-04 18:30:00.000000+0000 |             Assistant |          Asha |             null
+    121 |   8000 | 2021-01-05 18:30:00.000000+0000 |         UpdatedHelper | UpdatedHelper |             null
+    124 |   9000 | 2021-01-06 18:30:00.000000+0000 |              Engineer |         Rohan |             null
+      3 |  20000 | 2021-01-02 18:30:00.000000+0000 |       Technical staff |       Samrath |             null
+
+(6 rows)
