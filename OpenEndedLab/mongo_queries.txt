@@ -1,0 +1,98 @@
+> use College;
+switched to db College
+> db.createCollection("Student");
+{ "ok" : 1 }
+> db.createCollection("Faculty");
+{ "ok" : 1 }
+> db.createCollection("COE");
+{ "ok" : 1 }
+> db.createCollection("Library");
+{ "ok" : 1 }
+> db.createCollection("Admission");
+{ "ok" : 1 }
+> db.createCollection("CollegeFestival");
+{ "ok" : 1 }
+> db.Student.insertMany([{"firstName":"Asha","lastName":"S","USN":"1BM18CS003","department":"CSE","Place":"Shimoga","DOB":"02/04/2000"},{"firstName":"Kiran","lastName":"A S","USN":"1BM18CS050","department":"CSE","Place":"Kolar","DOB":"02/07/2000"},{"firstName":"Tarun","lastName":"M N","USN":"1BM18CS123","department":"CSE","Place":"Bangalore","DOB":"24/09/2000"}]);
+{
+        "acknowledged" : true,
+        "insertedIds" : [
+                ObjectId("6077fe3b8490646ff3268389"),
+                ObjectId("6077fe3b8490646ff326838a"),
+                ObjectId("6077fe3b8490646ff326838b")
+        ]
+}
+> db.Student.insertOne({"firstName":"Sumanth","lastName":"KV","USN":"1BM18CS112","department":"CSE","Place":"Sagar","DOB":"04/02/2000"});
+{
+        "acknowledged" : true,
+        "insertedId" : ObjectId("6077fd778490646ff3268388")
+}
+> db.Faculty.insertMany([{"firstName":"Bheemsha","lastName":"D","Department":"ME","Salary":"75000","YOE":"15","teaches":"Thermodynamics"},{"firstName":"Giridhar","lastName":"G","Department":"ME","Salary":"75000","YOE":"12","teaches":"Solid Mechanics"},{"firstName":"Rangavittal","lastName":"H K","Department":"ME","Salary":"85000","YOE":"17","teaches":"Fluid Mechanics - I"},{"firstName":"Sharana","lastName":"Basavaraj","Department":"ME","Salary":"85000","YOE":"19","teaches":"Engineering materials"}]);
+{
+        "acknowledged" : true,
+        "insertedIds" : [
+                ObjectId("6078000f8490646ff326838c"),
+                ObjectId("6078000f8490646ff326838d"),
+                ObjectId("6078000f8490646ff326838e"),
+                ObjectId("6078000f8490646ff326838f")
+        ]
+}
+> db.COE.insertMany([{"roomNo": "401","capacity":"60","building":"Platinum jublee","exam_id":"101","time":"9:00 - 10:15","faculty":"Bheemsha"},{"roomNo": "502","capacity":"55","building":"ME block","exam_id":"102","time":"11:00-12:15","faculty":"Giridhar"},{"roomNo": "204","capacity":"60","building":"Law Block","exam_id":"103","time":"2:00 - 3:15","faculty":"basavaraj"},{"roomNo": "308","capacity":"75","building":"Architecture","exam_id":"105","time":"5:00-6:15","faculty":"Rangavittal"}])
+{
+        "acknowledged" : true,
+        "insertedIds" : [
+                ObjectId("607801ad8490646ff3268390"),
+                ObjectId("607801ad8490646ff3268391"),
+                ObjectId("607801ad8490646ff3268392"),
+                ObjectId("607801ad8490646ff3268393")
+        ]
+}
+> db.Library.insertMany([{"USN":"1bm18cs112","dueDate":"04/04/2021","bookISBN":"xyz","price":"400","name":"SumanthKV","title":"OOPS"},{"USN":"1bm18cs134","dueDate":"05/05/2021","bookISBN":"pqr","price":"300","name":"ArunTS","title":"Cloud Computing"},{"USN":"1bm18ec034","dueDate":"06/05/2021","bookISBN":"qwerty","price":"550","name":"Kiran","title":"Big Data Analytics"},{"USN":"1bm18is045","dueDate":"07/05/2021","bookISBN":"plax","price":"600","name":"Smitha","title":"Machine learning"}])
+{
+        "acknowledged" : true,
+        "insertedIds" : [
+                ObjectId("607803fd8490646ff3268394"),
+                ObjectId("607803fd8490646ff3268395"),
+                ObjectId("607803fd8490646ff3268396"),
+                ObjectId("607803fd8490646ff3268397")
+        ]
+}
+> db.CollegeFestival.insertMany([{"event_name":"Codeathon","event_location":"BMSCE","partner_name":"cisco","start_time":"10","end_time":"11"},{"event_name":"hackathon","event_location":"pes","partner_name":"cloudera","start_time":"11","end_time":"12"}])
+{
+        "acknowledged" : true,
+        "insertedIds" : [
+                ObjectId("607807538490646ff326839c"),
+                ObjectId("607807538490646ff326839d")
+        ]
+}
+> db.CollegeFestival.insertMany([{"event_name":"Codeathon","event_location":"NIE","partner_name":"cisco","start_time":"10","end_time":"14"},{"event_name":"training","event_location":"msrit","partner_name":"aws","start_time":"12","end_time":"13"}])
+{
+        "acknowledged" : true,
+        "insertedIds" : [
+                ObjectId("607807928490646ff326839e"),
+                ObjectId("607807928490646ff326839f")
+        ]
+}
+> db.Admission.insertMany([{"USN":"1bm18cs112","Department":"CSE","Course":"ML","enrolled":"01/01/2021","name":"Sumanth"},{"USN":"1bm18cs123","Department":"CSE","Course":"AI","enrolled":"02/01/2021","name":"Smitha"},{"USN":"1bm18cs123","Department":"CSE","Course":"Cloud computing","enrolled":"02/02/20> ","name":"Arun"},{"USN":"1bm18cs134","Department":"CSE","Course":"BDA","enrolled":"03/03/2021","name":"Tejas"}]);
+{
+        "acknowledged" : true,
+        "insertedIds" : [
+                ObjectId("607807928490646ff325455d"),
+                ObjectId("607807928490646ff326456r")
+        ]
+}
+> db.Student.find({"firstName":"Sumanth"})
+{ "_id" : ObjectId("6077fd778490646ff3268388"), "firstName" : "Sumanth", "lastName" : "KV", "USN" : "1BM18CS112", "department" : "CSE", "Place" : "Sagar", "DOB" : "04/02/2000" }
+> db.Admission.find({"USN":"1bm18cs112"})
+{ "_id" : ObjectId("607805898490646ff3268398"), "USN" : "1bm18cs112", "Department" : "CSE", "Course" : "ML", "enrolled" : "01/01/2021", "name" : "Sumanth" }
+> db.Faculty.find({"firstName":"Sharana"})
+{ "_id" : ObjectId("6078000f8490646ff326838f"), "firstName" : "Sharana", "lastName" : "Basavaraj", "Department" : "ME", "Salary" : "85000", "YOE" : "19", "teaches" : "Engineering materials" }
+> db.Library.find({"dueDate":"05/05/2021"})
+{ "_id" : ObjectId("607803fd8490646ff3268395"), "USN" : "1bm18cs134", "dueDate" : "05/05/2021", "bookISBN" : "pqr", "price" : "300", "name" : "ArunTS", "title" : "Cloud Computing" }
+> db.CollegeFestival.find({"event_name":"hackathon"})
+{ "_id" : ObjectId("607807538490646ff326839d"), "event_name" : "hackathon", "event_location" : "pes", "partner_name" : "cloudera", "start_time" : "11", "end_time" : "12" }
+> db.COE.find({"roomNo":"204"})
+{ "_id" : ObjectId("607801ad8490646ff3268392"), "roomNo" : "204", "capacity" : "60", "building" : "Law Block", "exam_id" : "103", "time" : "2:00 - 3:15", "faculty" : "basavaraj" }
+> db.Student.updateOne({"lastName":"KV"},{ $set: { "Place":"Sagar Shimoga" } })
+{ "acknowledged" : true, "matchedCount" : 1, "modifiedCount" : 1 }
+> db.Student.deleteOne({"firstName":"Tarun"})
+{ "acknowledged" : true, "deletedCount" : 1 }
